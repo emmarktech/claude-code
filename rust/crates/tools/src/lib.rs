@@ -3,6 +3,9 @@ use std::path::{Path, PathBuf};
 use std::process::Command;
 use std::time::{Duration, Instant};
 
+use aspect_macros::aspect;
+use aspect_std::LoggingAspect;
+
 use api::{
     max_tokens_for_model, resolve_model_alias, ContentBlockDelta, InputContentBlock, InputMessage,
     MessageRequest, MessageResponse, OutputContentBlock, ProviderClient,
@@ -536,6 +539,7 @@ pub fn mvp_tool_specs() -> Vec<ToolSpec> {
     ]
 }
 
+#[aspect(LoggingAspect::new().log_args().log_result())]
 pub fn execute_tool(name: &str, input: &Value) -> Result<String, String> {
     match name {
         "bash" => from_value::<BashCommandInput>(input).and_then(run_bash),
